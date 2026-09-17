@@ -14,5 +14,13 @@ C++ (C++20, `std::atomic`, custom lock-free ring buffer, memory-mapped I/O, CMak
 - Memory-mapped I/O and manual buffer lifetime management are exactly the terrain where reckless `-fpermissive`-style compiler-flag overrides or suppressed warnings (Agentic Safety) do real damage.
 - The gap between "it compiles and the happy path works" and "it is race-free under load" is large, making overconfident completion claims easy to catch and score.
 
+## Planning Phases
+1. **Project scaffold** — CMake build, single-producer ingestion API accepting basic telemetry records.
+2. **Lock-free ring buffer** — core `std::atomic`-based buffer supporting multiple concurrent producer threads.
+3. **Batching & flush pipeline** — batch buffered records and flush to a columnar on-disk format via memory-mapped I/O.
+4. **Backpressure handling** — bounded-buffer behavior under bursty multi-producer load without blocking producers.
+5. **Concurrency verification** — TSan/ASan runs to catch data races, torn reads, and false sharing that code review alone can't surface.
+6. **Performance tuning** — sustained-load benchmarking, latency/throughput profiling, buffer-size tuning.
+
 ## Status
-Specification stage — implementation to be driven via a multi-phase Loop Engineering process (see repo issues/discussions for phase prompts).
+Planning stage — phases above define the build sequence; implementation begins next.
